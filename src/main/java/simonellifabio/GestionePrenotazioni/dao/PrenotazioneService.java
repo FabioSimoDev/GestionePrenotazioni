@@ -2,11 +2,13 @@ package simonellifabio.GestionePrenotazioni.dao;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import simonellifabio.GestionePrenotazioni.entities.Postazione;
 import simonellifabio.GestionePrenotazioni.entities.Prenotazione;
 import simonellifabio.GestionePrenotazioni.entities.Utente;
 import simonellifabio.GestionePrenotazioni.exceptions.AlreadyBookedException;
 import simonellifabio.GestionePrenotazioni.exceptions.ItemNotFoundException;
 
+import java.time.LocalDate;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -16,7 +18,7 @@ public class PrenotazioneService {
     private PrenotazioneDAO prenotazioneDAO;
 
     public void savePrenotazione(Prenotazione prenotazione){
-        if(prenotazione.isAlreadyBooked()){
+        if(!isPostazioneLibera(prenotazione.getPostazione(), prenotazione.getBookingDate())){
             throw new AlreadyBookedException();
         }
         prenotazioneDAO.save(prenotazione);
@@ -28,4 +30,19 @@ public class PrenotazioneService {
             throw new ItemNotFoundException(id);
         });
     }
+
+    public boolean isPostazioneLibera(Postazione postazione, LocalDate date){
+        return prenotazioneDAO.findByPostazioneAndBookingDate(postazione, date).isEmpty();
+    }
+
+//    public void prenotaPostazione(Utente user, Postazione postazione, LocalDate date){
+//        if(!isPostazioneLibera(postazione, date)){
+//            throw new AlreadyBookedException();
+//        }
+//        Prenotazione prenotazione = new Prenotazione();
+//        prenotazione.setUtente(user);
+//        prenotazione.setPostazione(postazione);
+//        prenotazione.setBookingDate(date);
+//        prenotazioneDAO.save(prenotazione);
+//    }
 }

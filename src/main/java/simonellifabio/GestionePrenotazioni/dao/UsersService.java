@@ -50,4 +50,13 @@ public class UsersService {
             throw new ItemNotFoundException(id);
         });
     }
+
+    public Utente getUtenteByEmail(String email){
+        Optional<Utente> utente = usersDAO.findByEmail(email);
+        if(utente.isPresent()){
+            return utente.get();
+        }else{
+            throw new ItemNotFoundException();
+        }
+    }
 }

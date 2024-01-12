@@ -20,6 +20,7 @@ public class Postazione {
     @GeneratedValue
     private UUID id;
     private String description;
+    @Enumerated(EnumType.STRING)
     private StationType type;
     private int maxPeople;
     @ManyToOne
